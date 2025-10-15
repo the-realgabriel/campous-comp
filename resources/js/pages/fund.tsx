@@ -84,7 +84,8 @@ export default function FundPage(): JSX.Element {
         const amount = parseFloat(form.amount)
         if (Number.isNaN(amount) || amount === 0) return
         const signed = form.type === "in" ? Math.abs(amount) : -Math.abs(amount)
-        const r: RecordItem = { id: Date.now(), type: form.type, ...form, amount: signed } as RecordItem
+        const { type, ...rest } = form
+        const r: RecordItem = { id: Date.now(), type, ...rest, amount: signed } as RecordItem
 
         // optimistic UI
         setRecords(prev => [r, ...prev])
@@ -231,21 +232,21 @@ export default function FundPage(): JSX.Element {
                                         onClick={() => quickAdd(50, "in")}
                                         className="inline-flex items-center px-3 py-2 bg-green-50 text-green-700 rounded-lg border border-green-100 text-sm"
                                     >
-                                        +$50 Quick
+                                        +N5000 Quick
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => quickAdd(100, "in")}
                                         className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg text-sm shadow"
                                     >
-                                        +$100
+                                        +N10,000
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => quickAdd(20, "out")}
                                         className="inline-flex items-center px-3 py-2 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm"
                                     >
-                                        -$20 Quick
+                                        -N2000 Quick
                                     </button>
                                 </div>
 
@@ -253,6 +254,7 @@ export default function FundPage(): JSX.Element {
                                     <button
                                         type="submit"
                                         className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition"
+                                        onClick={() => { } }
                                     >
                                         Add Record
                                     </button>
