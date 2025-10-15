@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, JSX } from "react"
 import { Input } from "@/components/ui/input"
 import { fund } from "@/routes";
 import { type BreadcrumbItem } from '@/types'
