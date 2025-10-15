@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useEffect, JSX } from "react"
+import React, { useState, useMemo, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { fund } from "@/routes";
 import { type BreadcrumbItem } from '@/types'
 import AppLayout from "@/layouts/app-layout";
 import { Head } from '@inertiajs/react'
+import { JSX } from "react/jsx-runtime";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -246,7 +247,7 @@ export default function FundPage(): JSX.Element {
                                         onClick={() => quickAdd(20, "out")}
                                         className="inline-flex items-center px-3 py-2 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm"
                                     >
-                                        -N2000 Quick
+                                        -N20 Quick
                                     </button>
                                 </div>
 
@@ -254,7 +255,6 @@ export default function FundPage(): JSX.Element {
                                     <button
                                         type="submit"
                                         className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition"
-                                        onClick={() => { } }
                                     >
                                         Add Record
                                     </button>
