@@ -6,6 +6,8 @@ import AppLayout from "@/layouts/app-layout";
 import { Head } from '@inertiajs/react'
 import { JSX } from "react/jsx-runtime";
 
+// --- Types ---
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Fund',
@@ -15,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type FormState = {
     type: "in" | "out"
-    amount: string
+    amount: string // Stored as string in form state for input control
     source: string
     date: string
     notes: string
@@ -24,90 +26,135 @@ type FormState = {
 type RecordItem = {
     id: number
     type: "in" | "out"
-    amount: number // dollars (decimal)
+    amount: number // Stored as number (dollars) in records state
     source?: string
     date?: string
     notes?: string
 }
 
+const ACCOUNT_ID: number = 1 // TODO: replace with real account id (prop, context or current user mapping)
+
+// --- Helper Functions ---
+
+// If using Laravel Sanctum cookie auth: call /sanctum/csrf-cookie first and send credentials: 'include'
+async function ensureCsrf(): Promise<void> {
+    try {
+        await fetch("/sanctum/csrf-cookie", { credentials: "include" })
+    } catch (e) { /* ignore */ }
+}
+
+async function saveRecordToApi(record: RecordItem) {
+    // record.amount is dollars (number); convert to cents (integer)
+    const amountCents = Math.round(record.amount * 100)
+    const payload = {
+        account_id: ACCOUNT_ID,
+        amount: amountCents,        // integer cents
+        currency: "usd",
+        status: "completed",
+        source: record.source || "ui",
+        metadata: { notes: record.notes || "", date: record.date || null }
+    }
+
+    await ensureCsrf()
+
+    const res = await fetch("/api/transactions", {
+        method: "POST",
+        credentials: "include", // include cookies for Sanctum; remove if using token auth
+        headers: { "Content-Type": "application/json" /*, Authorization: 'Bearer ...' */ },
+        body: JSON.stringify(payload),
+    })
+
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }))
+        throw new Error(err.error || "Failed to save transaction")
+    }
+
+    return res.json()
+}
+
+async function deleteRecordFromApi(id: number): Promise<void> {
+    await ensureCsrf()
+    
+    const res = await fetch(`/api/transactions/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+    })
+
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }))
+        throw new Error(err.error || "Failed to delete transaction")
+    }
+}
+
+
+// --- Component ---
+
 export default function FundPage(): JSX.Element {
     const [form, setForm] = useState<FormState>({ type: "in", amount: "", source: "", date: "", notes: "" })
     const [records, setRecords] = useState<RecordItem[]>([])
 
+    // FIX: Safer TypeScript handling for state update
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         const { name, value } = e.target
-        setForm(prev => ({ ...prev, [name]: value } as FormState))
+        const key = name as keyof FormState; // Assert that 'name' is a valid key
+
+        setForm(prev => ({ 
+            ...prev, 
+            [key]: value 
+        }))
     }
 
-    // <-- add these helpers ------------------------------------------------
-    const ACCOUNT_ID: number = 1 // TODO: replace with real account id (prop, context or current user mapping)
-
-    // If using Laravel Sanctum cookie auth: call /sanctum/csrf-cookie first and send credentials: 'include'
-    async function ensureCsrf(): Promise<void> {
-        try {
-            await fetch("/sanctum/csrf-cookie", { credentials: "include" })
-        } catch (e) { /* ignore */ }
-    }
-
-    async function saveRecordToApi(record: RecordItem) {
-        // record.amount is dollars in your UI; convert to cents
-        const amountCents = Math.round(Number(record.amount) * 100)
-        const payload = {
-            account_id: ACCOUNT_ID,
-            amount: amountCents,        // integer cents
-            currency: "usd",
-            status: "completed",
-            source: record.source || "ui",
-            metadata: { notes: record.notes || "", date: record.date || null }
-        }
-
-        // If using token (API token / Bearer), set Authorization header instead of credentials.
-        await ensureCsrf()
-
-        const res = await fetch("/api/transactions", {
-            method: "POST",
-            credentials: "include", // include cookies for Sanctum; remove if using token auth
-            headers: { "Content-Type": "application/json" /*, Authorization: 'Bearer ...' */ },
-            body: JSON.stringify(payload),
-        })
-
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({ error: res.statusText }))
-            throw new Error(err.error || "Failed to save transaction")
-        }
-
-        return res.json()
-    }
-
-    // Example: call API whenever a new local record is added
     async function addRecord(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const amount = parseFloat(form.amount)
         if (Number.isNaN(amount) || amount === 0) return
+
+        // Calculate signed amount for the record
         const signed = form.type === "in" ? Math.abs(amount) : -Math.abs(amount)
-        const { type, ...rest } = form
-        const r: RecordItem = { id: Date.now(), type, ...rest, amount: signed } as RecordItem
+        
+        // Construct the new record
+        const r: RecordItem = { 
+            id: Date.now(), // Temporary ID for optimistic UI
+            type: form.type, 
+            amount: signed, 
+            source: form.source, 
+            date: form.date, 
+            notes: form.notes 
+        }
 
-        // optimistic UI
+        // 1. Optimistic UI update
         setRecords(prev => [r, ...prev])
-        setForm({ type: "in", amount: "", source: "", date: "", notes: "" })
+        setForm({ type: "in", amount: "", source: "", date: "", notes: "" }) // Reset form
 
-        // persist to API (handle errors as needed)
+        // 2. Persist to API
         try {
-            await saveRecordToApi(r)
-            // optionally mark record as saved / update id from server
+            const apiResponse = await saveRecordToApi(r)
+            // Optional: Update the local record with the real ID from the server
+            setRecords(prev => prev.map(rec => rec.id === r.id ? { ...rec, id: apiResponse.id } : rec))
         } catch (err) {
-            console.error("Save failed", err)
-            // rollback or show error to user
+            console.error("Save failed, rolling back local record.", err)
+            // Rollback optimistic update
+            setRecords(prev => prev.filter(rec => rec.id !== r.id)) 
+            // TODO: Display error to user
         }
     }
-    // <-- end helpers -----------------------------------------------------
 
-    function removeRecord(id: number) {
+    // FIX: Added API call to delete the record permanently
+    async function removeRecord(id: number) {
+        // Optimistic UI removal
         setRecords(prev => prev.filter(r => r.id !== id))
+        
+        try {
+            await deleteRecordFromApi(id)
+        } catch (err) {
+            console.error("Delete failed on server.", err)
+            // TODO: Reload the transaction list or show an error to the user
+            alert("Failed to delete record from server. Please refresh.")
+        }
     }
 
-    // optional: load recent transactions from API on mount (if you add a GET route)
+    // Load recent transactions from API on mount
     useEffect(() => {
         async function load() {
             try {
@@ -116,13 +163,13 @@ export default function FundPage(): JSX.Element {
                 })
                 if (res.ok) {
                     const list = await res.json()
-                    // map server rows (amount in cents) to UI format (dollars)
+                    // Map server rows (amount in cents) to UI format (dollars)
                     setRecords(list.map((t: any) => ({
                         id: t.id,
                         type: t.amount >= 0 ? "in" : "out",
                         amount: Number(t.amount) / 100,
                         source: t.source,
-                        date: t.created_at,
+                        date: t.created_at ? t.created_at.slice(0, 10) : "",
                         notes: (t.metadata && t.metadata.notes) || ""
                     })))
                 }
@@ -138,16 +185,33 @@ export default function FundPage(): JSX.Element {
         return { incoming, outgoing, balance }
     }, [records])
 
-    const quickAdd = (amt: number, type: "in" | "out" = "in") => {
+    const quickAdd = async (amt: number, type: "in" | "out" = "in") => {
         const signed = type === "in" ? Math.abs(amt) : -Math.abs(amt)
-        const r: RecordItem = { id: Date.now(), type, amount: signed, source: "Quick", date: new Date().toISOString().slice(0, 10), notes: "" }
+        const r: RecordItem = { 
+            id: Date.now(), 
+            type, 
+            amount: signed, 
+            source: "Quick Add", 
+            date: new Date().toISOString().slice(0, 10), 
+            notes: "" 
+        }
+        
+        // 1. Optimistic UI
         setRecords(prev => [r, ...prev])
+
+        // 2. Persist to API
+        try {
+            await saveRecordToApi(r)
+        } catch (err) {
+            console.error("Quick Add Save failed", err)
+            setRecords(prev => prev.filter(rec => rec.id !== r.id)) 
+        }
     }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title='Fund' />
-            <div className="min-h-screen  p-6">
+            <div className="min-h-screen p-6">
                 <div className="max-w-4xl mx-auto">
                     <div className="bg-white shadow-xl rounded-2xl p-6">
                         <header className="flex items-center justify-between mb-6">
@@ -228,26 +292,27 @@ export default function FundPage(): JSX.Element {
 
                             <div className="md:col-span-5 flex justify-between mt-2">
                                 <div className="flex gap-2">
+                                    {/* FIX: Changed Naira (N) to Dollars ($) */}
                                     <button
                                         type="button"
                                         onClick={() => quickAdd(50, "in")}
                                         className="inline-flex items-center px-3 py-2 bg-green-50 text-green-700 rounded-lg border border-green-100 text-sm"
                                     >
-                                        +N5000 Quick
+                                        +$50 Quick
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => quickAdd(100, "in")}
                                         className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg text-sm shadow"
                                     >
-                                        +N10,000
+                                        +$100
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => quickAdd(20, "out")}
                                         className="inline-flex items-center px-3 py-2 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm"
                                     >
-                                        -N20 Quick
+                                        -$20 Quick
                                     </button>
                                 </div>
 
@@ -260,10 +325,10 @@ export default function FundPage(): JSX.Element {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setRecords([])}
+                                        onClick={() => setRecords([])} // Note: This clears the *local* list, but API data remains.
                                         className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg border hover:bg-gray-50"
                                     >
-                                        Clear All
+                                        Clear Local
                                     </button>
                                 </div>
                             </div>
@@ -294,7 +359,7 @@ export default function FundPage(): JSX.Element {
                                                 className="text-sm text-gray-500 hover:text-red-600"
                                                 aria-label="Remove"
                                             >
-                                                Remove
+                                                Remove (API)
                                             </button>
                                         </div>
                                     </div>
