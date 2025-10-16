@@ -2,9 +2,11 @@
 
 export default function Balance() {
     return (
-        <div className="p-4 bg-white rounded-xl shadow-md mb-6 h-full">
-            <h3 className="text-sm font-semibold text-gray-500 mb-2">Current Balance</h3>
-            <p className="text-2xl font-bold text-gray-800">₦ 0.00</p>
-        </div>
+ <div className="bg-blue-600 text-white rounded-2xl p-6 shadow-xl mb-6 h-full">
+                    <h1 className="text-xl font-light">Current Balance</h1>
+                    <div className="text-4xl font-extrabold mt-1">
+                        {/*₦{totalBalance.toFixed(2)}*/}₦0.00
+                    </div>
+                </div>
     );
 }

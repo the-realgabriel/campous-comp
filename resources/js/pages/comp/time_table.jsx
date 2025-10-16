@@ -208,12 +208,7 @@ export default function MobileWallet() {
             <div className="max-w-md mx-auto"> {/* Max width for mobile focus */}
                 
                 {/* Global Balance Card */}
-                <div className="bg-blue-600 text-white rounded-2xl p-6 shadow-xl mb-6">
-                    <h1 className="text-xl font-light">Current Balance</h1>
-                    <div className="text-4xl font-extrabold mt-1">
-                        ₦{totalBalance.toFixed(2)}
-                    </div>
-                </div>
+               
 
                 {/* Monthly Budget Tracker */}
                 <BudgetGoal total={totalExpenses} goal={budgetGoal} />
