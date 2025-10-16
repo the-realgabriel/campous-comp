@@ -85,7 +85,7 @@ export default function Activity(): JSX.Element {
             })
             if (!res.ok) {
                 const err = await res.json().catch(() => null)
-                throw new Error(err?.message || `Create failed (${res.status})`)
+                throw new Error(err?.message || `Dev wants to sleep abeg (${res.status})`)
             }
             const created = await res.json()
             // APIResource usually returns created model
@@ -95,7 +95,7 @@ export default function Activity(): JSX.Element {
             setDate('')
             setShowForm(false)
         } catch (e: any) {
-            setError(e.message ?? 'Create failed')
+            setError(e.message ?? 'Dev wants to sleep abeg')
         }
     }
 

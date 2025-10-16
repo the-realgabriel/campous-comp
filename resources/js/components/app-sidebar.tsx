@@ -18,12 +18,18 @@ import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import { DollarSign } from 'lucide-react';
 import AppLogo from './app-logo';
 import { activity } from '@/routes';
-
+import { timetable } from '@/routes';
+import { Calendar } from 'lucide-react';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Planner',
+        href: timetable(),
+        icon: Calendar,
     },
      {
         title: 'Activity',

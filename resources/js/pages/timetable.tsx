@@ -18,7 +18,7 @@ export default function Timetable(): JSX.Element {
     const [lecturer, setLecturer] = useState('');
     const [time, setTime] = useState('');
     const [location, setLocation] = useState('');
-    
+
    
     return (
         <AppLayout>
@@ -29,7 +29,7 @@ export default function Timetable(): JSX.Element {
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             {/* Page Content */}
-                            Timetable page is under construction.
+                            This page is under construction.
                         </div> 
                     </div>
                 </div>
