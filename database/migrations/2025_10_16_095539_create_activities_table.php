@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-        });
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->date('date')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');});
     }
 
     /**

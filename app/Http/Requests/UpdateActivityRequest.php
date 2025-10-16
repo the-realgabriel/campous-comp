@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Models\Activity;
+
 
 class UpdateActivityRequest extends FormRequest
 {
@@ -11,7 +14,15 @@ class UpdateActivityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        if (!auth()->check()) {
+            return false; // Returns 403 Forbidden if not logged in
+        }
+
+         $activity = $this->route('activity');
+
+         if ($activity instanceof Activity) {
+            return $activity->user_id === auth()->id();
+        }
     }
 
     /**

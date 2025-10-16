@@ -23,9 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('activity');
 });
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('time_table', function () {
-        return Inertia::render('time_table');
-    })->name('time_table');
+    Route::get('timetable', function () {
+        return Inertia::render('timetable');
+    })->name('timetable');
 });
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('Study', function () {

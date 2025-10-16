@@ -1,3 +1,4 @@
+import React, {JSX} from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
@@ -89,23 +90,23 @@ export default function Welcome(): JSX.Element {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <div className="text-sm text-slate-500">Account balance</div>
-                                            <div className="mt-1 text-2xl font-semibold text-slate-900">$4,128.50</div>
+                                            <div className="mt-1 text-2xl font-semibold text-slate-900">N4,128.50</div>
                                         </div>
-                                        <div className="text-sm text-green-600 font-medium">+ $320</div>
+                                        <div className="text-sm text-green-600 font-medium">+ N320</div>
                                     </div>
 
                                     <ul className="mt-6 space-y-3">
                                         <li className="flex items-center justify-between text-sm">
                                             <div className="text-slate-700">Donation — Church</div>
-                                            <div className="text-slate-900">+$200.00</div>
+                                            <div className="text-slate-900">+N200.00</div>
                                         </li>
                                         <li className="flex items-center justify-between text-sm">
                                             <div className="text-slate-700">Event costs</div>
-                                            <div className="text-slate-900">-$45.00</div>
+                                            <div className="text-slate-900">-N45.00</div>
                                         </li>
                                         <li className="flex items-center justify-between text-sm">
                                             <div className="text-slate-700">Memberships</div>
-                                            <div className="text-slate-900">+$165.00</div>
+                                            <div className="text-slate-900">+N165.00</div>
                                         </li>
                                     </ul>
 
