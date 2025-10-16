@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+// REMOVED: import axios from "axios";
 import { Input } from "@/components/ui/input";
 // Assume a simple Button component exists for better styling
 // import { Button } from "@/components/ui/button";
@@ -79,13 +79,24 @@ export default function MobileWallet() {
         fetchTransactions();
     }, []);
 
-    // --- API Functions (Unchanged, using Axios) ---
+    // --- API Functions (Refactored to use fetch) ---
 
     async function fetchTransactions() {
         setLoading(true);
         try {
-            const res = await axios.get("/api/transactions", { withCredentials: true });
-            setItems(res.data);
+            // fetch automatically handles relative paths and returns a Promise that resolves to the Response object.
+            // credentials: 'include' is the fetch equivalent of axios's { withCredentials: true }
+            const res = await fetch("/api/transactions", { 
+                method: 'GET',
+                credentials: 'include' 
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json(); // Explicitly parse the JSON body
+            setItems(data);
         } catch (err) {
             console.error("Load failed:", err);
         } finally {
@@ -121,8 +132,20 @@ export default function MobileWallet() {
         };
 
         try {
-            const res = await axios.post("/api/transactions", payload, { withCredentials: true });
-            const newTx = res.data;
+            const res = await fetch("/api/transactions", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // MUST be set for POST requests
+                },
+                body: JSON.stringify(payload), // MUST stringify the body data
+                credentials: 'include' // Equivalent to axios's { withCredentials: true }
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            
+            const newTx = await res.json();
             setItems(prev => [newTx, ...prev]);
             // Reset form but keep the current type and date
             setForm(prev => ({ ...prev, category: "", amount: "", notes: "" }));
@@ -137,7 +160,18 @@ export default function MobileWallet() {
     async function removeItem(id) {
         if (!window.confirm("Are you sure you want to delete this transaction?")) return;
         try {
-            await axios.delete(`/api/transactions/${id}`, { withCredentials: true });
+            const res = await fetch(`/api/transactions/${id}`, {
+                method: 'DELETE', // Set the method to DELETE
+                credentials: 'include'
+            });
+
+            if (!res.ok) {
+                // Check for a successful deletion status, often 200 or 204 No Content
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            
+            // Note: DELETE requests often return a 204 No Content, so no need to parse JSON.
+            // The item is removed from the local state regardless of a body in the response.
             setItems(prev => prev.filter(i => i.id !== id));
         } catch (err) {
             console.error(err);
