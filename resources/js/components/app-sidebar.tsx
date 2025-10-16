@@ -17,6 +17,7 @@ import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import { DollarSign } from 'lucide-react';
 import AppLogo from './app-logo';
+import { activity } from '@/routes';
 
 const mainNavItems: NavItem[] = [
     {
@@ -24,11 +25,17 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+     {
+        title: 'Activity',
+        href: activity(),
+        icon: BookOpen,
+    },
     {
         title: 'Fund',
         href:fund(),
         icon: DollarSign,
     },
+   
 ];
 
 const footerNavItems: NavItem[] = [
