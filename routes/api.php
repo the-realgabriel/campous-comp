@@ -18,3 +18,7 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name
 
 Route::post('/payments', [PaymentController::class, 'create'])->name('payments.create');
 Route::post('/interswitch/callback', [InterswitchWebhookController::class, 'handle'])->name('interswitch.callback');
+
+Route::get('/transactions', [TransactionController::class, 'index']);
+Route::post('/transactions', [TransactionController::class, 'store']);
+Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy']);
