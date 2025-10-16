@@ -261,8 +261,8 @@ export default function FundPage(): JSX.Element {
         const currencyCode = 566; // NGN
 
         const paymentRequest: PaymentRequest = {
-            merchant_code: "MX153376",
-            pay_item_id: "5558761",
+             merchant_code: "MX6072",
+            pay_item_id: "9405967",
             txn_ref: "MX-TRN-" + Math.random() * 2.5,
             site_redirect_url: window.location.href,
             amount: amountValue, 
