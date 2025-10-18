@@ -5,14 +5,13 @@ import { type BreadcrumbItem, type SharedData } from '@/types'
 import AppLayout from "@/layouts/app-layout"
 import { Head, usePage } from '@inertiajs/react'
 
-// --- Global Interface for TypeScript ---
+
 declare global {
     interface Window {
         webpayCheckout: (request: PaymentRequest) => void;
     }
 }
 
-// --- Types ---
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Fund',
@@ -114,7 +113,7 @@ async function deleteRecordFromApi(serverId: number): Promise<void> {
     }
 }
 
-// --- Payment Script Loader (No changes needed) ---
+
 async function loadWebpayScript(): Promise<void> {
     if (typeof window.webpayCheckout === "function") return;
     return new Promise((resolve, reject) => {
@@ -221,7 +220,7 @@ export default function FundPage(): JSX.Element {
         }
     }
 
-    // --- PAYMENT GATEWAY FIX: Debugged and Confirmed ---
+   
     const paymentCallback = (response: any) => {
         console.log("Payment Gateway Response:", response);
         // TODO: This is where you would process the successful payment response:

@@ -19,6 +19,8 @@ import { DollarSign } from 'lucide-react';
 import AppLogo from './app-logo';
 import { activity } from '@/routes';
 import { timetable } from '@/routes';
+import { chat } from '@/routes';
+import { BotIcon } from 'lucide-react';
 import { Calendar } from 'lucide-react';
 const mainNavItems: NavItem[] = [
     {
@@ -35,6 +37,11 @@ const mainNavItems: NavItem[] = [
         title: 'Activity',
         href: activity(),
         icon: BookOpen,
+    },
+    {
+        title: 'Study Bot',
+        href: chat(),
+        icon: BotIcon,
     },
     {
         title: 'Fund',

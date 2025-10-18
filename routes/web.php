@@ -28,9 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('timetable');
 });
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('Study', function () {
-        return Inertia::render('Study');
-    })->name('Study');
+    Route::get('chat', function () {
+        return Inertia::render('chat');
+    })->name('chat');
 });
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -49,10 +49,10 @@ export default function Welcome(): JSX.Element {
                         <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div>
                                 <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
-                                    Simple fund management. Minimal design.
+                                     Your Campus Life Manager. Minimal design.
                                 </h1>
                                 <p className="mt-4 text-lg text-slate-600 max-w-xl">
-                                    Track funds, accept payments and keep a reliable balance — all with a clean, minimal interface
+                                    Track funds, accept payments and tracks your day — all with a clean, minimal interface
                                     built for speed and clarity.
                                 </p>
 
