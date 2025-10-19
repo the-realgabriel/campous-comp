@@ -129,7 +129,7 @@ export default function Welcome(): JSX.Element {
                             <div className="rounded-lg p-6 border border-slate-100 shadow-sm">
                                 <h3 className="text-sm font-semibold ">Payments</h3>
                                 <p className="mt-2 text-sm ">
-                                    Integrates with Interswitch or other gateways.
+                                    Integrates with Interswitch.
                                 </p>
                             </div>
                             <div className="rounded-lg p-6 border border-slate-100 shadow-sm">
