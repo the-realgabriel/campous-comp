@@ -120,7 +120,7 @@ export default function Activity(): JSX.Element {
             <Head title="Activity" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="relative min-h-[60vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <div className="p-4 bg-white rounded-xl shadow-md mb-6 h-full relative">
+                    <div className="p-4  rounded-xl shadow-md mb-6 h-full relative">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-500 mb-2">Activity</h3>

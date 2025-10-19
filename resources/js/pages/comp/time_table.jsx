@@ -14,20 +14,20 @@ function TransactionTypeTabs({ type, setType }) {
     const baseClass = "px-4 py-2 text-sm font-medium rounded-full transition-colors w-1/2";
     
     return (
-        <div className="flex bg-gray-100 p-1 rounded-full mb-4">
+        <div className="flex p-1 rounded-full mb-4">
             <button
                 type="button"
                 onClick={() => setType('out')}
-                className={`${baseClass} ${type === 'out' ? 'bg-red-500 text-white shadow-md' : 'text-gray-600'}`}
+                className={`${baseClass} ${type === 'out' ? 'bg-red-500 te shadow-md' : ''}`}
             >
-                Expense 💸
+                <p> Expense 💸</p>
             </button>
             <button
                 type="button"
                 onClick={() => setType('in')}
-                className={`${baseClass} ${type === 'in' ? 'bg-green-500 text-white shadow-md' : 'text-gray-600'}`}
+                className={`${baseClass} ${type === 'in' ? 'bg-green-500 te shadow-md' : ''}`}
             >
-                Income 💰
+                <p>Income 💰</p>
             </button>
         </div>
     );
@@ -180,7 +180,7 @@ export default function MobileWallet() {
 
     // --- Render ---
     return (
-        <div className="min-h-screen bg-gray-50 p-4"> {/* Mobile background change */}
+        <div className="min-h-screen  p-4"> {/* Mobile background change */}
             <div className="max-w-md mx-auto"> {/* Max width for mobile focus */}
                 
                 {/* Global Balance Card */}
@@ -190,8 +190,8 @@ export default function MobileWallet() {
                 {/*<BudgetGoal total={totalExpenses} goal={budgetGoal} />*/}
 
                 {/* Transaction Input Area (Mobile-Optimized) */}
-                <div className="bg-white shadow-lg rounded-2xl p-4 mb-6">
-                    <h2 className="text-lg font-bold text-gray-800 mb-3">New Transaction</h2>
+                <div className=" shadow-lg rounded-2xl p-4 mb-6">
+                    <h2 className="text-lg font-bold mb-3">New Transaction</h2>
                     
                     <TransactionTypeTabs type={form.type} setType={setFormType} />
                     
@@ -234,9 +234,9 @@ export default function MobileWallet() {
                         <button
                             type="submit"
                             disabled={isSaving || !isFormValid}
-                            className={`w-full py-3 text-white rounded-lg shadow-md transition-colors font-semibold mt-2
+                            className={`w-full py-3 te rounded-lg shadow-md transition-colors font-semibold mt-2
                                 ${isSaving || !isFormValid 
-                                    ? "bg-gray-400 cursor-not-allowed" 
+                                    ? " cursor-not-allowed" 
                                     : form.type === 'out' 
                                         ? "bg-red-500 hover:bg-red-600" 
                                         : "bg-green-500 hover:bg-green-600"
@@ -249,13 +249,13 @@ export default function MobileWallet() {
 
                 {/* Transaction History (Scrollable Mobile List) */}
                 <section>
-                    <h2 className="text-lg font-bold text-gray-800 mb-3">Transaction History</h2>
+                    <h2 className="text-lg font-bold  mb-3">Transaction History</h2>
                     {loading ? (
-                        <div className="text-gray-500 text-sm p-4 text-center">Loading...</div>
+                        <div className=" text-sm p-4 text-center">Loading...</div>
                     ) : (
                         <div className="space-y-3">
                             {items.length === 0 && (
-                                <div className="text-sm text-gray-500 p-4 text-center border rounded-lg">No transactions yet. Start tracking!</div>
+                                <div className="text-sm  p-4 text-center border rounded-lg">No transactions yet. Start tracking!</div>
                             )}
                             {items.map(item => {
                                 const isExpense = Number(item.amount) < 0;
@@ -268,7 +268,7 @@ export default function MobileWallet() {
                                             <div className="font-semibold text-base truncate">
                                                 {isExpense ? 'Expense:' : 'Income:'} {item.category}
                                             </div>
-                                            <div className="text-xs text-gray-500 mt-1 flex gap-3">
+                                            <div className="text-xs  mt-1 flex gap-3">
                                                 <span>{item.date || "No date"}</span>
                                                 <span className="truncate">{item.notes}</span>
                                             </div>

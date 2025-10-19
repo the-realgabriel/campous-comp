@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, JSX } from "react"
 import { Input } from "@/components/ui/input"
 import { fund } from "@/routes"
 import { type BreadcrumbItem, type SharedData } from '@/types'
@@ -369,7 +369,7 @@ export default function FundPage(): JSX.Element {
             <Head title='Fund' />
             <div className="min-h-screen p-6">
                 <div className="max-w-4xl mx-auto">
-                    <div className="bg-white shadow-xl rounded-2xl p-6">
+                    <div className=" shadow-xl rounded-2xl p-6">
                         <header className="flex items-center justify-between mb-6">
                             <h1 className="text-2xl font-extrabold ">Fund Manager</h1>
                             <div className="text-right">
@@ -389,12 +389,12 @@ export default function FundPage(): JSX.Element {
                         {/* FIX: Form onSubmit is correctly set to the manual handler: addRecord */}
                         <form onSubmit={addRecord} className="grid gap-3 md:grid-cols-5 items-end mb-5">
                             <div className="md:col-span-1">
-                                <label className="block text-sm font-medium text-gray-600 mb-1">Type</label>
+                                <label className="block text-sm font-medium  mb-1">Type</label>
                                 <select
                                     name="type"
                                     value={form.type}
                                     onChange={handleChange}
-                                    className="w-full rounded-lg border border-gray-200 px-3 py-2 bg-white"
+                                    className="w-full rounded-lg border border-gray-200 px-3 py-2 "
                                 >
                                     <option value="in">Add (In)</option>
                                     <option value="out">Withdraw (Out)</option>
