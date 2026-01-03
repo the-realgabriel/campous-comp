@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "public",
+  "functions": {
+    "api/lanbda.php": {
+        "runtime": "vercel-php@.7.4"
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/lanbda.php" }
+  ]
+}
