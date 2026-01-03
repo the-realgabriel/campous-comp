@@ -7,6 +7,6 @@
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/lanbda.php" }
+    { "source": "/(.*)", "destination": "/api/lambda.php" }
   ]
 }
