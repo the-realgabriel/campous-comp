@@ -13,21 +13,22 @@ class Activity_controller extends Controller
 {
     public function index()
     {
-        return ActivityResource::collection(Activity::paginate(3));
+        return ActivityResource::collection(Activity::orderBy('created_at', 'desc')->get());
     }
 
     public function show( Activity $activity){
         return new ActivityResource($activity);
     }
 
-    public function store(StoreActivityRequest $activity){
+    public function store(StoreActivityRequest $request){
         $activity = Activity::create($request->validated());
        
         return new ActivityResource($activity);
     }
 
-    public function update(UpdateActivityRequest $activity){
-        $activity -> update($request->validated());
+    public function update(UpdateActivityRequest $request){
+        $activity = $request->route('activity');
+        $activity->update($request->validated());
        
         return new ActivityResource($activity);
     }

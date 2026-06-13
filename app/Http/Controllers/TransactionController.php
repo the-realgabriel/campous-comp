@@ -2,34 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction; 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller; 
-
 
 class TransactionController extends Controller
 {
-    
-    public function index()
+    public function index(Request $request)
     {
-        
-        return response()->json(Transaction::orderBy('created_at', 'desc')->get());
+        $query = Transaction::orderBy('created_at', 'desc');
+
+        if ($request->has('limit')) {
+            $query->limit($request->integer('limit'));
+        }
+
+        return response()->json($query->get());
     }
 
-    
     public function store(Request $request)
     {
-        
         $validated = $request->validate([
-            'category' => 'required|string',
-            'amount' => 'required|numeric',
-            'date' => 'nullable|date',
-            'notes' => 'nullable|string'
+            'account_id' => 'required|exists:accounts,id',
+            'amount' => 'required|integer',
+            'currency' => 'sometimes|string|max:3',
+            'status' => 'sometimes|string|max:255',
+            'source' => 'sometimes|nullable|string|max:255',
+            'metadata' => 'sometimes|nullable|array',
         ]);
-        
-        
+
         $transaction = Transaction::create($validated);
-        
+
         return response()->json($transaction, 201);
+    }
+
+    public function show(Transaction $transaction)
+    {
+        return response()->json($transaction);
+    }
+
+    public function destroy(Transaction $transaction)
+    {
+        $transaction->delete();
+
+        return response()->json(null, 204);
     }
 }

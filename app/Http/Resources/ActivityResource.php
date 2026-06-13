@@ -15,9 +15,12 @@ class ActivityResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'title' =>this->title,
-            'description' =>this->description,
-            'date' =>this->date,
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'date' => $this->date,
+            'user_id' => $this->user_id,
+            'created_at' => $this->created_at,
         ];
     }
 }

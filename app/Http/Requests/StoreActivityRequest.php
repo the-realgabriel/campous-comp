@@ -18,10 +18,12 @@ class StoreActivityRequest extends FormRequest
         }
 
          $activity = $this->route('activity');
-         
-         if ($activity instanceof Activity) {
+          
+          if ($activity instanceof Activity) {
             return $activity->user_id === auth()->id();
         }
+
+        return true;
     }
     
 

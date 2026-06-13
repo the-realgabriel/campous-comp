@@ -44,7 +44,7 @@ type PaymentRequest = {
     amount: string;
     currency: number;
     site_redirect_url: string;
-    onComplete: (response: any) => void;
+    onComplete: (response: unknown) => void;
     mode: "TEST" | "LIVE";
 };
 
@@ -68,7 +68,15 @@ async function ensureAccountExistsOnServer(id: number): Promise<boolean> {
     }
 }
 
-async function saveRecordToApi(record: RecordItem, accountId: number | null): Promise<any> {
+type ServerTx = {
+    id: number;
+    amount: number;
+    source?: string;
+    created_at?: string;
+    metadata?: { notes?: string };
+};
+
+async function saveRecordToApi(record: RecordItem, accountId: number | null): Promise<ServerTx> {
     if (!accountId) throw new Error("No account selected. Please select or create an account.");
 
     const amountCents = Math.round(record.amount * 100);
@@ -147,7 +155,6 @@ export default function FundPage(): JSX.Element {
     const [form, setForm] = useState<FormState>({ type: "in", amount: "", source: "", date: "", notes: "" });
     const [records, setRecords] = useState<RecordItem[]>([]);
     const [accountId, setAccountId] = useState<number | null>(serverAccountId ?? ACCOUNT_FALLBACK_ID);
-    const [accountMissing, setAccountMissing] = useState<boolean>(false);
 
     useEffect(() => {
         async function verify() {
@@ -155,10 +162,7 @@ export default function FundPage(): JSX.Element {
                 const ok = await ensureAccountExistsOnServer(accountId);
                 if (!ok) {
                     console.warn("Configured account id not found:", accountId);
-                    setAccountMissing(true);
                     setAccountId(null);
-                } else {
-                    setAccountMissing(false);
                 }
                 return;
             }
@@ -169,13 +173,10 @@ export default function FundPage(): JSX.Element {
                     const list = await res.json();
                     if (Array.isArray(list) && list.length > 0 && list[0].id) {
                         setAccountId(list[0].id);
-                        setAccountMissing(false);
                         return;
                     }
                 }
-            } catch {}
-
-            setAccountMissing(true);
+            } catch { /* ignore */ }
         }
 
         verify();
@@ -221,7 +222,7 @@ export default function FundPage(): JSX.Element {
     }
 
    
-    const paymentCallback = (response: any) => {
+    const paymentCallback = (response: unknown) => {
         console.log("Payment Gateway Response:", response);
         // TODO: This is where you would process the successful payment response:
         // 1. Send the response to your Laravel backend for verification (Crucial step!).
@@ -256,7 +257,7 @@ export default function FundPage(): JSX.Element {
 
         // 💡 CRITICAL: Ensure amount is in Kobo (integer string) for Webpay.
         const amountValue = (amount * 100).toFixed(0); 
-        const txnRef = `MX-TRN-${Date.now()}-${Math.floor(Math.random() * 999)}`;
+        
         const currencyCode = 566; // NGN
 
         const paymentRequest: PaymentRequest = {
@@ -310,7 +311,7 @@ export default function FundPage(): JSX.Element {
                 if (res.ok) {
                     const list = await res.json();
                     setRecords(
-                        list.map((t: any) => ({
+                        list.map((t: ServerTx) => ({
                             id: Date.now() + Math.floor(Math.random() * 100000),
                             serverId: t.id,
                             type: Number(t.amount) >= 0 ? "in" : "out",
@@ -321,7 +322,7 @@ export default function FundPage(): JSX.Element {
                         }))
                     );
                 }
-            } catch {}
+            } catch { /* ignore */ }
         }
         load();
     }, []);

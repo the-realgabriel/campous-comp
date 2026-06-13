@@ -11,17 +11,15 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { fund } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
-import { DollarSign } from 'lucide-react';
+import { BookOpen, LayoutGrid, BotIcon, Calendar, PartyPopper } from 'lucide-react';
 import AppLogo from './app-logo';
 import { activity } from '@/routes';
 import { timetable } from '@/routes';
 import { chat } from '@/routes';
-import { BotIcon } from 'lucide-react';
-import { Calendar } from 'lucide-react';
+import { eventspace } from '@/routes';
+
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -33,27 +31,24 @@ const mainNavItems: NavItem[] = [
         href: timetable(),
         icon: Calendar,
     },
-     {
+    {
         title: 'Activity',
         href: activity(),
         icon: BookOpen,
+    },
+    {
+        title: 'Event Space',
+        href: eventspace(),
+        icon: PartyPopper,
     },
     {
         title: 'Study Bot',
         href: chat(),
         icon: BotIcon,
     },
-    {
-        title: 'Fund',
-        href:fund(),
-        icon: DollarSign,
-    },
-   
 ];
 
-const footerNavItems: NavItem[] = [
-
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (

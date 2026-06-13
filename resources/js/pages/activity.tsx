@@ -54,8 +54,8 @@ export default function Activity(): JSX.Element {
                 if (!res.ok) throw new Error(`Failed to load (${res.status})`)
                 const data = await res.json()
                 if (mounted) setActivities(Array.isArray(data) ? data : [])
-            } catch (e: any) {
-                setError(e.message ?? 'Failed to load activities')
+            } catch (e: unknown) {
+                setError(e instanceof Error ? e.message : 'Failed to load activities')
             } finally {
                 if (mounted) setLoading(false)
             }
@@ -94,8 +94,8 @@ export default function Activity(): JSX.Element {
             setDescription('')
             setDate('')
             setShowForm(false)
-        } catch (e: any) {
-            setError(e.message ?? 'Dev wants to sleep abeg')
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Dev wants to sleep abeg')
         }
     }
 
@@ -110,8 +110,8 @@ export default function Activity(): JSX.Element {
             })
             if (!res.ok) throw new Error(`Delete failed (${res.status})`)
             setActivities(prev => prev.filter(a => a.id !== id))
-        } catch (e: any) {
-            alert(e.message ?? 'Delete failed')
+        } catch (e: unknown) {
+            alert(e instanceof Error ? e.message : 'Delete failed')
         }
     }
 

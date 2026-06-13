@@ -26,6 +26,7 @@ export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
+    onboarding: boolean;
     sidebarOpen: boolean;
     [key: string]: unknown;
 }
@@ -37,7 +38,12 @@ export interface User {
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
+    account_id: number | null;
+    tier: string;
+    onboarded_at: string | null;
+    department: string | null;
+    year_of_study: string | null;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown;
 }

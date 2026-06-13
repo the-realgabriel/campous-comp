@@ -35,7 +35,12 @@ return [
         ],
     ],
     'openai' => [
-    'key' => env('OPENAI_API_KEY'),
-],
+        'key' => env('OPENAI_API_KEY'),
+    ],
+
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+        'model' => env('GROQ_MODEL', 'mixtral-8x7b-32768'),
+    ],
 
 ];

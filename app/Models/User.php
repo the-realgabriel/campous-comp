@@ -23,7 +23,26 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tier',
+        'onboarded_at',
+        'department',
+        'year_of_study',
     ];
+
+    public function isOnboarded(): bool
+    {
+        return $this->onboarded_at !== null;
+    }
+
+    public function hasTier(string ...$tiers): bool
+    {
+        return in_array($this->tier, $tiers);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->tier === 'admin';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
